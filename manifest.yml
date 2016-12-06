@@ -1,0 +1,5 @@
+---
+applications: 
+- name: apps
+  memory: 512M
+  path: target/annie.jar

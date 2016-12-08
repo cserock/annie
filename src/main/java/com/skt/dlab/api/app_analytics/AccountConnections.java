@@ -1,4 +1,4 @@
-package com.skt.dlab.api;
+package com.skt.dlab.api.app_analytics;
 
 import com.skt.dlab.domain.Account;
 import lombok.Data;

@@ -1,7 +1,7 @@
 package com.skt.dlab;
 
-import com.skt.dlab.api.AccountConnectionProduct;
-import com.skt.dlab.api.AccountConnections;
+import com.skt.dlab.api.app_analytics.AccountConnectionProduct;
+import com.skt.dlab.api.app_analytics.AccountConnections;
 import com.skt.dlab.domain.Error;
 import com.skt.dlab.service.AnnieApiService;
 import io.swagger.annotations.Api;
@@ -44,10 +44,12 @@ public class ApiController {
 			return new ResponseEntity<>(accountConnections, HttpStatus.OK);
 
 		} catch(HttpClientErrorException ex) {
+			ex.printStackTrace();
 			String message = ex.getClass().toString();
 			return new ResponseEntity<>(new Error(ex.getStatusCode().value(), message), ex.getStatusCode());
 
 		}  catch(Exception ex) {
+			ex.printStackTrace();
 			String message = ex.getMessage();
 			return new ResponseEntity<>(new Error(HttpStatus.INTERNAL_SERVER_ERROR.value(), message), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -68,10 +70,12 @@ public class ApiController {
 			return new ResponseEntity<>(accountConnectionProduct, HttpStatus.OK);
 
 		} catch(HttpClientErrorException ex) {
+			ex.printStackTrace();
 			String message = ex.getClass().toString();
 			return new ResponseEntity<>(new Error(ex.getStatusCode().value(), message), ex.getStatusCode());
 
 		}  catch(Exception ex) {
+			ex.printStackTrace();
 			String message = ex.getMessage();
 			return new ResponseEntity<>(new Error(HttpStatus.INTERNAL_SERVER_ERROR.value(), message), HttpStatus.INTERNAL_SERVER_ERROR);
 		}

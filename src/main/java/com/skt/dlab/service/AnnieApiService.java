@@ -1,7 +1,7 @@
 package com.skt.dlab.service;
 
-import com.skt.dlab.api.AccountConnectionProduct;
-import com.skt.dlab.api.AccountConnections;
+import com.skt.dlab.api.app_analytics.AccountConnectionProduct;
+import com.skt.dlab.api.app_analytics.AccountConnections;
 import com.skt.dlab.domain.Account;
 import com.skt.dlab.domain.Product;
 import org.json.simple.JSONArray;
@@ -155,6 +155,24 @@ public class AnnieApiService {
 
 			JSONObject productObject = (JSONObject) products.get(i);
 
+			// set devices
+			JSONArray devicesArray = (JSONArray) productObject.get("devices");
+			List<String> devices = new ArrayList<>();
+
+			for(int j=0; j<devicesArray.size(); j++){
+				String device = devicesArray.get(j).toString();
+				devices.add(device);
+			}
+
+			// set device codes
+			JSONArray deviceCodesArray = (JSONArray) productObject.get("device_codes");
+			List<String> deviceCodes = new ArrayList<>();
+
+			for(int j=0; j<deviceCodesArray.size(); j++){
+				String deviceCode = deviceCodesArray.get(j).toString();
+				deviceCodes.add(deviceCode);
+			}
+
 			Product product = new Product();
 			product.setProductId(productObject.get("product_id").toString());
 			product.setProductName(productObject.get("product_name").toString());
@@ -162,6 +180,10 @@ public class AnnieApiService {
 			product.setStatus((boolean)productObject.get("status"));
 			product.setFirstSalesDate(productObject.get("first_sales_date").toString());
 			product.setLastSalesDate(productObject.get("last_sales_date").toString());
+
+			product.setDevices(devices);
+			product.setDeviceCodes(deviceCodes);
+
 
 			productList.add(product);
 		}

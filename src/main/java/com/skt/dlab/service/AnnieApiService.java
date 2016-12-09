@@ -2,7 +2,9 @@ package com.skt.dlab.service;
 
 import com.skt.dlab.api.app_analytics.AccountConnectionProduct;
 import com.skt.dlab.api.app_analytics.AccountConnections;
+import com.skt.dlab.api.app_analytics.IAPList;
 import com.skt.dlab.domain.Account;
+import com.skt.dlab.domain.IAP;
 import com.skt.dlab.domain.Product;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -119,7 +121,7 @@ public class AnnieApiService {
 
 
 
-	public AccountConnectionProduct getAccountConnectionProduct(int accountId, int pageIndex) throws Exception {
+	public AccountConnectionProduct getAccountConnectionProduct(String accountId, int pageIndex) throws Exception {
 		final String uri = "https://api.appannie.com/v1.2/accounts/" + accountId + "/products?page_index=" + pageIndex;
 
 		JSONObject jsonObject = request(uri, HttpMethod.GET);
@@ -190,6 +192,82 @@ public class AnnieApiService {
 
 		accountConnectionProduct.setProducts(productList);
 		return accountConnectionProduct;
+	}
+
+
+	public IAPList getIAPList(String accountId, String productId, int pageIndex) throws Exception {
+		final String uri = "https://api.appannie.com/v1.2/accounts/" + accountId + "/products/" + productId + "/iaps?page_index=" + pageIndex;
+
+		JSONObject jsonObject = request(uri, HttpMethod.GET);
+
+		if(jsonObject.containsKey("error")){
+			throw new Exception(jsonObject.get("message").toString());
+		}
+
+		IAPList iAPList = new IAPList();
+
+		iAPList.setCode(Integer.parseInt(jsonObject.get("code").toString()));
+		iAPList.setProductId(jsonObject.get("product_id").toString());
+		iAPList.setPageNum(Integer.parseInt(jsonObject.get("page_num").toString()));
+		iAPList.setPageIndex(Integer.parseInt(jsonObject.get("page_index").toString()));
+
+		String prevPage = "";
+		if(jsonObject.get("prev_page") != null){
+			prevPage = jsonObject.get("prev_page").toString();
+		}
+
+		String nextPage = "";
+		if(jsonObject.get("next_page") != null){
+			nextPage = jsonObject.get("next_page").toString();
+		}
+
+		iAPList.setNextPage(nextPage);
+		iAPList.setPrevPage(prevPage);
+
+		/*
+		JSONArray iaps = new JSONArray();
+
+		JSONObject obj = new JSONObject();
+		obj.put("name", "test_1");
+		obj.put("sku", "sku_1");
+		obj.put("type", "type_1");
+
+		iaps.add(obj);
+
+		obj = new JSONObject();
+		obj.put("name", "test_2");
+		obj.put("sku", "sku_2");
+		obj.put("type", "type_2");
+
+		iaps.add(obj);
+
+		obj = new JSONObject();
+		obj.put("name", "test_3");
+		obj.put("sku", "sku_3");
+		obj.put("type", "type_3");
+
+		iaps.add(obj);
+		*/
+
+		JSONArray iaps = (JSONArray) jsonObject.get("iaps");
+
+		List<IAP> iapArray = new ArrayList<>();
+
+		for(int i=0; i<iaps.size(); i++){
+
+			JSONObject iapObject = (JSONObject) iaps.get(i);
+
+			IAP iap = new IAP();
+			iap.setName(iapObject.get("name").toString());
+			iap.setSku(iapObject.get("sku").toString());
+			iap.setType(iapObject.get("type").toString());
+
+			iapArray.add(iap);
+		}
+
+		iAPList.setIAPs(iapArray);
+
+		return iAPList;
 	}
 
 

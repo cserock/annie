@@ -2,6 +2,7 @@ package com.skt.dlab;
 
 import com.skt.dlab.api.app_analytics.AccountConnectionProduct;
 import com.skt.dlab.api.app_analytics.AccountConnections;
+import com.skt.dlab.api.app_analytics.IAPList;
 import com.skt.dlab.domain.Error;
 import com.skt.dlab.service.AnnieApiService;
 import io.swagger.annotations.Api;
@@ -57,7 +58,7 @@ public class ApiController {
 
 	@ApiOperation(value = "get account products")
 	@RequestMapping(value="/account/products", method= RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> accountProducts(@RequestParam(value="account_id", required = true) int accountId, @RequestParam(value="page_index", defaultValue = "0") int pageIndex){
+	public ResponseEntity<?> accountProducts(@RequestParam(value="account_id", required = true) String accountId, @RequestParam(value="page_index", defaultValue = "0") int pageIndex){
 
 		try{
 
@@ -68,6 +69,32 @@ public class ApiController {
 			}
 
 			return new ResponseEntity<>(accountConnectionProduct, HttpStatus.OK);
+
+		} catch(HttpClientErrorException ex) {
+			ex.printStackTrace();
+			String message = ex.getClass().toString();
+			return new ResponseEntity<>(new Error(ex.getStatusCode().value(), message), ex.getStatusCode());
+
+		}  catch(Exception ex) {
+			ex.printStackTrace();
+			String message = ex.getMessage();
+			return new ResponseEntity<>(new Error(HttpStatus.INTERNAL_SERVER_ERROR.value(), message), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@ApiOperation(value = "Retrieve the In Product Purchase list of one product")
+	@RequestMapping(value="/account/products/iaps", method= RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> accountProductsIaps(@RequestParam(value="account_id", required = true) String accountId, @RequestParam(value="product_id", required = true) String productId, @RequestParam(value="page_index", defaultValue = "0") int pageIndex){
+
+		try{
+
+			IAPList iapList = annieApiService.getIAPList(accountId, productId, pageIndex);
+
+			if(iapList.getIAPs().isEmpty()){
+				return new ResponseEntity<>(iapList, HttpStatus.NOT_FOUND);
+			}
+
+			return new ResponseEntity<>(iapList, HttpStatus.OK);
 
 		} catch(HttpClientErrorException ex) {
 			ex.printStackTrace();

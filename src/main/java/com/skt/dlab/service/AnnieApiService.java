@@ -3,9 +3,11 @@ package com.skt.dlab.service;
 import com.skt.dlab.api.app_analytics.AccountConnectionProduct;
 import com.skt.dlab.api.app_analytics.AccountConnections;
 import com.skt.dlab.api.app_analytics.IAPList;
+import com.skt.dlab.api.app_analytics.SharedProducts;
 import com.skt.dlab.domain.Account;
 import com.skt.dlab.domain.IAP;
 import com.skt.dlab.domain.Product;
+import com.skt.dlab.domain.Sharing;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -151,44 +153,7 @@ public class AnnieApiService {
 
 		JSONArray products = (JSONArray) jsonObject.get("products");
 
-		List<Product> productList = new ArrayList<>();
-
-		for(int i=0; i<products.size(); i++){
-
-			JSONObject productObject = (JSONObject) products.get(i);
-
-			// set devices
-			JSONArray devicesArray = (JSONArray) productObject.get("devices");
-			List<String> devices = new ArrayList<>();
-
-			for(int j=0; j<devicesArray.size(); j++){
-				String device = devicesArray.get(j).toString();
-				devices.add(device);
-			}
-
-			// set device codes
-			JSONArray deviceCodesArray = (JSONArray) productObject.get("device_codes");
-			List<String> deviceCodes = new ArrayList<>();
-
-			for(int j=0; j<deviceCodesArray.size(); j++){
-				String deviceCode = deviceCodesArray.get(j).toString();
-				deviceCodes.add(deviceCode);
-			}
-
-			Product product = new Product();
-			product.setProductId(productObject.get("product_id").toString());
-			product.setProductName(productObject.get("product_name").toString());
-			product.setIcon(productObject.get("icon").toString());
-			product.setStatus((boolean)productObject.get("status"));
-			product.setFirstSalesDate(productObject.get("first_sales_date").toString());
-			product.setLastSalesDate(productObject.get("last_sales_date").toString());
-
-			product.setDevices(devices);
-			product.setDeviceCodes(deviceCodes);
-
-
-			productList.add(product);
-		}
+		List<Product> productList = setProducts(products);
 
 		accountConnectionProduct.setProducts(productList);
 		return accountConnectionProduct;
@@ -270,5 +235,115 @@ public class AnnieApiService {
 		return iAPList;
 	}
 
+
+	public SharedProducts getSharedProducts(int pageIndex) throws Exception {
+
+		final String uri = "https://api.appannie.com/v1.2/sharing/products?page_index=" + pageIndex;
+		JSONObject jsonObject = request(uri, HttpMethod.GET);
+
+		// sample json
+//		String jsonString = "{\"code\":200,\"sharings\":[{\"vertical\":\"apps\",\"owner_account_id\":11223,\"owner_name\":\"Appannie\",\"products\":[{\"product_id\":\"345697\",\"product_name\":\"Super Fun Game\",\"icon\":\"http://www.appannie.com/pics/12.png\",\"status\":true,\"first_sales_date\":\"2012-12-12\",\"last_sales_date\":\"2013-01-12\"}]}],\"page_num\":1,\"page_index\":0,\"prev_page\": null,\"next_page\": null}";
+//		JSONParser jsonParser = new JSONParser();
+//		JSONObject jsonObject = (JSONObject) jsonParser.parse(jsonString);
+
+		if(jsonObject.containsKey("error")){
+			throw new Exception(jsonObject.get("message").toString());
+		}
+
+		log.debug(jsonObject.toString());
+
+		SharedProducts sharedProducts = new SharedProducts();
+
+		sharedProducts.setCode(Integer.parseInt(jsonObject.get("code").toString()));
+
+		sharedProducts.setPageNum(Integer.parseInt(jsonObject.get("page_num").toString()));
+		sharedProducts.setPageIndex(Integer.parseInt(jsonObject.get("page_index").toString()));
+
+		String prevPage = "";
+		if(jsonObject.get("prev_page") != null){
+			prevPage = jsonObject.get("prev_page").toString();
+		}
+
+		String nextPage = "";
+		if(jsonObject.get("next_page") != null){
+			nextPage = jsonObject.get("next_page").toString();
+		}
+
+		sharedProducts.setNextPage(nextPage);
+		sharedProducts.setPrevPage(prevPage);
+
+
+		JSONArray sharings = (JSONArray) jsonObject.get("sharings");
+
+		List<Sharing> sharingArray = new ArrayList<>();
+
+		for(int i=0; i<sharings.size(); i++){
+
+			JSONObject sharingObject = (JSONObject) sharings.get(i);
+
+			Sharing sharing = new Sharing();
+			sharing.setVertical(sharingObject.get("vertical").toString());
+			sharing.setOwnerAccountId(Integer.parseInt(sharingObject.get("owner_account_id").toString()));
+			sharing.setOwnerName(sharingObject.get("owner_name").toString());
+
+			JSONArray products = (JSONArray) sharingObject.get("products");
+
+			List<Product> productArray = setProducts(products);
+
+			sharing.setProducts(productArray);
+			sharingArray.add(sharing);
+		}
+
+		sharedProducts.setSharings(sharingArray);
+
+		return sharedProducts;
+	}
+
+	private List<Product> setProducts(JSONArray products){
+
+		List<Product> productArrayList = new ArrayList<>();
+
+		for(int i=0; i<products.size(); i++){
+
+			JSONObject productObject = (JSONObject) products.get(i);
+
+
+			// set devices
+			JSONArray devicesArray = (JSONArray) productObject.get("devices");
+			List<String> devices = new ArrayList<>();
+
+			if(devicesArray != null){
+				for(int j=0; j<devicesArray.size(); j++){
+					String device = devicesArray.get(j).toString();
+					devices.add(device);
+				}
+			}
+
+			// set device codes
+			JSONArray deviceCodesArray = (JSONArray) productObject.get("device_codes");
+			List<String> deviceCodes = new ArrayList<>();
+
+			if(deviceCodesArray != null){
+				for(int k=0; k<deviceCodesArray.size(); k++){
+					String deviceCode = deviceCodesArray.get(k).toString();
+					deviceCodes.add(deviceCode);
+				}
+			}
+
+			Product product = new Product();
+			product.setProductId(productObject.get("product_id").toString());
+			product.setProductName(productObject.get("product_name").toString());
+			product.setIcon(productObject.get("icon").toString());
+			product.setStatus((boolean)productObject.get("status"));
+			product.setFirstSalesDate(productObject.get("first_sales_date").toString());
+			product.setLastSalesDate(productObject.get("last_sales_date").toString());
+			product.setDevices(devices);
+			product.setDeviceCodes(deviceCodes);
+
+			productArrayList.add(product);
+		}
+
+		return productArrayList;
+	}
 
 }

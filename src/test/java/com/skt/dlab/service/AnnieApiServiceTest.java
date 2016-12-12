@@ -1,7 +1,6 @@
 package com.skt.dlab.service;
 
-import com.skt.dlab.api.app_analytics.IAPList;
-import com.skt.dlab.domain.Product;
+import com.skt.dlab.api.app_analytics.SharedProducts;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -76,6 +75,7 @@ public class AnnieApiServiceTest {
 	}
 	*/
 
+	/*
 	@Test
 	public void getIAPListTest(){
 
@@ -95,9 +95,20 @@ public class AnnieApiServiceTest {
 		} catch(Exception ex) {
 			ex.printStackTrace();
 		}
-
-
 	}
+	*/
 
+	@Test
+	public void getSharedProductsTest(){
+		try {
+
+			SharedProducts sharedProducts = annieApiService.getSharedProducts(0);
+
+			log.debug(sharedProducts.toString());
+
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+	}
 
 }

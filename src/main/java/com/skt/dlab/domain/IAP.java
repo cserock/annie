@@ -7,7 +7,7 @@ import lombok.Data;
  */
 @Data
 public class IAP {
-	String name;
-	String sku;
-	String type;
+	private String name;
+	private String sku;
+	private String type;
 }

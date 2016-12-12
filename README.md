@@ -5,9 +5,9 @@ RESTfulAPI for App Annie APIs
 - API docs : https://support.appannie.com/hc/en-us/categories/202773667-API
 
 
-implemented API List
+implemented API List - total 4/23
 
-[Meta-data API]
+[Meta-data API : 0/7]
 - Country List : N
 - Category List : N
 - Market List : N
@@ -16,7 +16,7 @@ implemented API List
 - Feed List : N
 - Translate from code to production ID : N
 
-[App Analytics API]
+[App Analytics API : 4/11]
 - Account Connections List : Y
 - Account Connection Product List : Y
 - IAP List : Y
@@ -29,7 +29,7 @@ implemented API List
 - Product Usage : N
 - Product Store Metrics : N
 
-[Store Stats API]
+[Store Stats API : 0/6]
 - Keyword Explorer : N
 - Product Ranked Keywords : N
 - Product Keyword Performance : N

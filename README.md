@@ -22,7 +22,9 @@ _**1. Account Connections List : Y**_
 _**2. Account Connection Product List : Y**_
 
 _**3. IAP List : Y**_
-4. Shared Products List : N
+
+_**4. Shared Products List : Y**_
+
 5. Product Sales : N
 6. Account Connection Sales : N
 7. Advertising Account Site & Campaign List : N

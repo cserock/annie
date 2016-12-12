@@ -1,7 +1,6 @@
 package com.skt.dlab.service;
 
-import com.skt.dlab.api.app_analytics.AccountConnectionProduct;
-import com.skt.dlab.domain.Product;
+import com.skt.dlab.api.app_analytics.SharedProducts;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -9,8 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by Rock Kang(cserock@gmail.com) on 2016. 12. 8..
@@ -54,7 +51,7 @@ public class AnnieApiServiceTest {
 		}
 
 	}
-	*/
+
 
 	@Test
 	public void AccountConnectionProductTest(){
@@ -65,7 +62,7 @@ public class AnnieApiServiceTest {
 			product.setProductId("901633885");
 			product.setProductName("코드씨씨엠");
 
-			AccountConnectionProduct accountConnectionProduct = annieApiService.getAccountConnectionProduct(165847, 0);
+			AccountConnectionProduct accountConnectionProduct = annieApiService.getAccountConnectionProduct("165847", 0);
 
 			assertThat(accountConnectionProduct.getProducts().get(0).getProductId()).isEqualTo(product.getProductId());
 			assertThat(accountConnectionProduct.getProducts().get(0).getProductName()).isEqualTo(product.getProductName());
@@ -76,6 +73,42 @@ public class AnnieApiServiceTest {
 		}
 
 	}
+	*/
 
+	/*
+	@Test
+	public void getIAPListTest(){
+
+		try{
+
+			Product product = new Product();
+			product.setProductId("901633885");
+			product.setProductName("코드씨씨엠");
+
+			IAPList iapList = annieApiService.getIAPList("165847", "901633885",0);
+
+			log.debug(iapList.toString());
+
+//			assertThat(accountConnectionProduct.getProducts().get(0).getProductId()).isEqualTo(product.getProductId());
+//			assertThat(accountConnectionProduct.getProducts().get(0).getProductName()).isEqualTo(product.getProductName());
+
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	*/
+
+	@Test
+	public void getSharedProductsTest(){
+		try {
+
+			SharedProducts sharedProducts = annieApiService.getSharedProducts(0);
+
+			log.debug(sharedProducts.toString());
+
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+	}
 
 }

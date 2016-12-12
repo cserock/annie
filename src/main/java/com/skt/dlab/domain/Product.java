@@ -9,12 +9,12 @@ import java.util.List;
  */
 @Data
 public class Product {
-	String productId;
-	String productName;
-	List<String> devices;
-	List<String> deviceCodes;
-	String icon;
-	Boolean status;
-	String firstSalesDate;
-	String lastSalesDate;
+	private String productId;
+	private String productName;
+	private List<String> devices;
+	private List<String> deviceCodes;
+	private String icon;
+	private Boolean status;
+	private String firstSalesDate;
+	private String lastSalesDate;
 }

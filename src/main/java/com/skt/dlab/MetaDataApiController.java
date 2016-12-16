@@ -5,6 +5,8 @@ import com.skt.dlab.domain.Error;
 import com.skt.dlab.service.MetaDataApiService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,9 @@ public class MetaDataApiController extends ApiController {
 
 	@ApiOperation(value = "Retrieve the list of countries, regions")
 	@RequestMapping(value="/countries", method= RequestMethod.GET, produces = "application/json")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Success", response = CountryList.class),
+			@ApiResponse(code = 500, message = "Failure", response = Error.class)})
 	public ResponseEntity<?> countries(){
 
 		try{

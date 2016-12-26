@@ -1,5 +1,6 @@
 package com.skt.dlab;
 
+import com.skt.dlab.api.meta_data.CategoryList;
 import com.skt.dlab.api.meta_data.CountryList;
 import com.skt.dlab.domain.Error;
 import com.skt.dlab.service.MetaDataApiService;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,5 +60,32 @@ public class MetaDataApiController extends ApiController {
 		}
 	}
 
+	@ApiOperation(value = "Retrieve all categories of the market that are mentioned in the request url")
+	@RequestMapping(value="/{vertical}/{market}/categories", method= RequestMethod.GET, produces = "application/json")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Success", response = CategoryList.class),
+			@ApiResponse(code = 500, message = "Failure", response = Error.class)})
+	public ResponseEntity<?> categories(@PathVariable(value="vertical", required = true) String vertical, @PathVariable(value="market", required = true) String market){
 
+		try{
+
+			CategoryList categoryList = metaDataApiService.getCategories(vertical, market);
+
+			if(categoryList.getCategories().isEmpty()){
+				return new ResponseEntity<>(categoryList, HttpStatus.NOT_FOUND);
+			}
+
+			return new ResponseEntity<>(categoryList, HttpStatus.OK);
+
+		} catch(HttpClientErrorException ex) {
+			ex.printStackTrace();
+			String message = ex.getClass().toString();
+			return new ResponseEntity<>(new Error(ex.getStatusCode().value(), message), ex.getStatusCode());
+
+		}  catch(Exception ex) {
+			ex.printStackTrace();
+			String message = ex.getMessage();
+			return new ResponseEntity<>(new Error(HttpStatus.INTERNAL_SERVER_ERROR.value(), message), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

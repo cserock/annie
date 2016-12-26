@@ -1,5 +1,6 @@
 package com.skt.dlab.service;
 
+import com.skt.dlab.api.meta_data.CategoryList;
 import com.skt.dlab.api.meta_data.CountryList;
 import com.skt.dlab.domain.Country;
 import com.skt.dlab.domain.Region;
@@ -11,7 +12,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Rock Kang(cserock@gmail.com) on 2016. 12. 15..
@@ -67,4 +70,52 @@ public class MetaDataApiService extends AnnieApiService {
 		return countryList;
 	}
 
+
+	public CategoryList getCategories(String vertical, String market) throws Exception {
+
+		final String uri = "https://api.appannie.com/v1.2/meta/" + vertical + "/" + market + "/categories";
+		JSONObject jsonObject = request(uri, HttpMethod.GET);
+
+		if(jsonObject.containsKey("error")){
+			throw new Exception(jsonObject.get("message").toString());
+		}
+
+		CategoryList categoryList = new CategoryList();
+		categoryList.setCode(Integer.parseInt(jsonObject.get("code").toString()));
+
+		// set app annie categories
+		JSONArray appAnnieCategories = (JSONArray) jsonObject.get("appannie_categories");
+		List<String> appAnnieCategoryArray = new ArrayList<>();
+		if(appAnnieCategories != null) {
+			for (int i = 0; i < appAnnieCategories.size(); i++) {
+				appAnnieCategoryArray.add(appAnnieCategories.get(i).toString());
+			}
+		}
+		categoryList.setAppAnnieCategories(appAnnieCategoryArray);
+
+		// set categories
+		JSONArray categories = (JSONArray) jsonObject.get("categories");
+		List<String> categoryArray = new ArrayList<>();
+		if(categories != null) {
+			for (int i = 0; i < categories.size(); i++) {
+				categoryArray.add(categories.get(i).toString());
+			}
+		}
+		categoryList.setCategories(categoryArray);
+
+		// set category labels
+		JSONObject categoryLabels = (JSONObject) jsonObject.get("category_labels");
+
+		HashMap<String, String> categoryLabelMap = new HashMap<>();
+
+		if(categoryLabels != null) {
+			Set<String> categoryTotalNames = categoryLabels.keySet();
+			for (String categoryTotalName : categoryTotalNames) {
+				categoryLabelMap.put(categoryTotalName, categoryLabels.get(categoryTotalName).toString());
+			}
+		}
+
+		categoryList.setCategoryLabels(categoryLabelMap);
+		return categoryList;
+	}
 }

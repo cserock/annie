@@ -7,9 +7,9 @@ RESTful API for App Annie APIs
 
 implemented API List - total 5/23
 
-[Meta-data API : 1/7]
+[Meta-data API : 2/7]
 - Country List : Y
-- Category List : N
+- Category List : Y
 - Market List : N
 - Currency List : N
 - Device List : N

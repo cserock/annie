@@ -2,6 +2,7 @@ package com.skt.dlab;
 
 import com.skt.dlab.api.meta_data.CategoryList;
 import com.skt.dlab.api.meta_data.CountryList;
+import com.skt.dlab.api.meta_data.MarketList;
 import com.skt.dlab.domain.Error;
 import com.skt.dlab.service.MetaDataApiService;
 import io.swagger.annotations.Api;
@@ -76,6 +77,35 @@ public class MetaDataApiController extends ApiController {
 			}
 
 			return new ResponseEntity<>(categoryList, HttpStatus.OK);
+
+		} catch(HttpClientErrorException ex) {
+			ex.printStackTrace();
+			String message = ex.getClass().toString();
+			return new ResponseEntity<>(new Error(ex.getStatusCode().value(), message), ex.getStatusCode());
+
+		}  catch(Exception ex) {
+			ex.printStackTrace();
+			String message = ex.getMessage();
+			return new ResponseEntity<>(new Error(HttpStatus.INTERNAL_SERVER_ERROR.value(), message), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@ApiOperation(value = "Retrieve all market list")
+	@RequestMapping(value="/markets", method= RequestMethod.GET, produces = "application/json")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Success", response = MarketList.class),
+			@ApiResponse(code = 500, message = "Failure", response = Error.class)})
+	public ResponseEntity<?> markets(){
+
+		try{
+
+			MarketList marketList = metaDataApiService.getMarkets();
+
+			if(marketList.getVerticals().isEmpty()){
+				return new ResponseEntity<>(marketList, HttpStatus.NOT_FOUND);
+			}
+
+			return new ResponseEntity<>(marketList, HttpStatus.OK);
 
 		} catch(HttpClientErrorException ex) {
 			ex.printStackTrace();

@@ -5,12 +5,12 @@ RESTful API for App Annie APIs
 - API docs : https://support.appannie.com/hc/en-us/categories/202773667-API
 
 
-implemented API List - total 6/23
+implemented API List - total 7/23
 
-[Meta-data API : 2/7]
+[Meta-data API : 3/7]
 - Country List : Y
 - Category List : Y
-- Market List : N
+- Market List : Y
 - Currency List : N
 - Device List : N
 - Feed List : N

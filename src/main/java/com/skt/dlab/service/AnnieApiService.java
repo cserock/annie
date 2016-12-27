@@ -24,6 +24,9 @@ public class AnnieApiService {
 	@Value("${app-annie.api.key}")
 	protected String apiKey;
 
+	@Value("${app-annie.api.version}")
+	protected String apiVersion;
+
 
 	protected JSONObject request(String uri, HttpMethod httpMethod){
 

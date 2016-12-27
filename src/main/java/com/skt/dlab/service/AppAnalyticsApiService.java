@@ -27,7 +27,8 @@ public class AppAnalyticsApiService extends AnnieApiService {
 	static final Logger log = LoggerFactory.getLogger(AppAnalyticsApiService.class);
 
 	public AccountConnections getAccountConnections(int pageIndex) throws Exception {
-		final String uri = "https://api.appannie.com/v1.2/accounts?page_index=" + pageIndex;
+
+		final String uri = String.format("https://api.appannie.com/v%s/accounts?page_index=%d", apiVersion, pageIndex);
 
 		JSONObject jsonObject = request(uri, HttpMethod.GET);
 
@@ -80,10 +81,9 @@ public class AppAnalyticsApiService extends AnnieApiService {
 		return accountConnections;
 	}
 
-
-
 	public AccountConnectionProduct getAccountConnectionProduct(String accountId, int pageIndex) throws Exception {
-		final String uri = "https://api.appannie.com/v1.2/accounts/" + accountId + "/products?page_index=" + pageIndex;
+
+		final String uri = String.format("https://api.appannie.com/v%s/accounts/%s/products?page_index=%d", apiVersion, accountId, pageIndex);
 
 		JSONObject jsonObject = request(uri, HttpMethod.GET);
 
@@ -120,7 +120,8 @@ public class AppAnalyticsApiService extends AnnieApiService {
 
 
 	public IAPList getIAPList(String accountId, String productId, int pageIndex) throws Exception {
-		final String uri = "https://api.appannie.com/v1.2/accounts/" + accountId + "/products/" + productId + "/iaps?page_index=" + pageIndex;
+
+		final String uri = String.format("https://api.appannie.com/v%s/accounts/%s/products/%s/iap?page_index=%d", apiVersion, accountId, productId, pageIndex);
 
 		JSONObject jsonObject = request(uri, HttpMethod.GET);
 
@@ -197,7 +198,8 @@ public class AppAnalyticsApiService extends AnnieApiService {
 
 	public SharedProducts getSharedProducts(int pageIndex) throws Exception {
 
-		final String uri = "https://api.appannie.com/v1.2/sharing/products?page_index=" + pageIndex;
+		final String uri = String.format("https://api.appannie.com/v%s/sharing/products?page_index=%d", apiVersion, pageIndex);
+
 		JSONObject jsonObject = request(uri, HttpMethod.GET);
 
 		// sample json
